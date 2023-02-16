@@ -1,6 +1,6 @@
 import {createRouter, createWebHistory} from "vue-router";
 import Home from "@/view/Home.vue";
-import Login from "@/view/Login.vue";
+import Login from "@/view/login/index.vue";
 
 
 // 2. 定义一些路由
