@@ -1,5 +1,6 @@
 import request from "@/utils/request";
 
+
 // 登录接口
 export function login(data: object) {
     return request({
@@ -14,5 +15,13 @@ export function user() {
     return request({
         url: "/api/admin/user",
         method: 'GET',
+    });
+}
+
+//用户退出接口
+export function logout() {
+    return request({
+        url: "/api/auth/logout",
+        method: 'POST',
     });
 }

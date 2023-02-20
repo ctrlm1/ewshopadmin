@@ -4,7 +4,7 @@
         <div class="view-account-container">
             <div class="view-account-top">
                 <div class="view-account-top-logo m-0">
-                    <img class="m-auto" style="margin: auto" src="@/assets/images/logo.png" alt="" />
+                    <img class="m-auto" style="margin: auto" src="@/assets/images/logo.png" alt=""/>
                 </div>
             </div>
             <div class="view-account-form">
@@ -19,7 +19,7 @@
                         <n-input v-model:value="formInline.username" placeholder="用户名:super@a.com">
                             <template #prefix>
                                 <n-icon size="18" color="#808695">
-                                    <PersonOutline />
+                                    <PersonOutline/>
                                 </n-icon>
                             </template>
                         </n-input>
@@ -33,7 +33,7 @@
                         >
                             <template #prefix>
                                 <n-icon size="18" color="#808695">
-                                    <LockClosedOutline />
+                                    <LockClosedOutline/>
                                 </n-icon>
                             </template>
                         </n-input>
@@ -50,11 +50,14 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
-import { PersonOutline, LockClosedOutline} from "@vicons/ionicons5";
-import {useRoute} from "vue-router";
+import {reactive, ref} from "vue";
+import {PersonOutline, LockClosedOutline} from "@vicons/ionicons5";
 import {useUserStore} from "@/store/user";
+import {useRouter} from "vue-router";
+import { useMessage } from 'naive-ui';
 
+const message = useMessage();
+(<any>window).$message = useMessage();
 
 interface FormState {
     email: string;
@@ -63,7 +66,8 @@ interface FormState {
 
 const formRef = ref();
 const loading = ref(false);
-const userStore = useUserStore()
+const userStore = useUserStore();
+const router = useRouter();
 
 const formInline = reactive({
     username: 'super@a.com',
@@ -73,54 +77,50 @@ const formInline = reactive({
 // 验证规则
 const rules = {
     // 失去焦点时触发
-    username:{ required: true, message: "请输入用户名", trigger: "blur" },
-    password:{ required: true, message: "请输入密码", trigger: "blur" },
+    username: {required: true, message: "请输入用户名", trigger: "blur"},
+    password: {required: true, message: "请输入密码", trigger: "blur"},
 };
 
-//登录
-const handleSubmit = () =>{
-    //表单验证
-    formRef.value.validate(async (errors:any) =>{
-        console.log(!errors)
-        if(!errors) {
+
+const handleSubmit = () => {
+    // 表单验证
+    formRef.value.validate(async(errors:any)=> {
+        if (!errors) {
             // return; // 有错误就返回，不执行，不再往下发送请求
-            //接收数据
-            const {username,password} = formInline;
-            //显示登陆中
+            // 接收数据
+            const {username, password} = formInline;
+            // 显示登录中
             loading.value = true;
-            //调整数据结构
+            // 调整数据结构
             const params: FormState = {
-                email:username,
+                email: username,
                 password
             };
             try {
-                console.log(params)
-
-                //执行登录操作
-                userStore.login(params).then(_res => {
-                    // res是userStore里面返回的数据
+                // 执行登录操作
+                userStore.login(params).then(_res => {      // res是userStore里面返回的数据
+                    console.log(_res);
                     // 关闭窗口
                     // Comment(res);
-                    // message.success("登陆成功");
+                    message.success("登陆成功");
                     loading.value = false;
                     // 弹出提示  登陆成功
                     // 跳转回首页
-                    // router.push({name: "dashboard"});
-                    console.log(_res)
-                }).catch(() =>{
+                    router.push({name: "dashboard"});
+                }).catch(() => {
                     // console.log(err);
                     loading.value = false;
                 });
                 // 成功跳转到首页
                 // 失败后提示
-            }finally {
+            } finally {
                 loading.value = false;
             }
-        }else {
+        }
+        else {
             // message.error('请填写完整信息，并且进行验证码校验')
         }
-    })
-    // console.log(formInline)
+    });
 }
 
 </script>
